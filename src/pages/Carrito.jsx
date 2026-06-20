@@ -22,86 +22,93 @@ function Carrito() {
     )
   }
 
-  return (
-    <div className="max-w-lg mx-auto px-4 py-6 pb-40">
+return (
+  <div className="w-full max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12 pb-40 md:pb-12">
+    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
+      <h1 className="text-2xl md:text-3xl font-black text-gray-900 uppercase tracking-tight">Tu carrito</h1>
+      <Link
+        to="/productos"
+        className="inline-flex items-center justify-center bg-black text-white px-5 py-3 rounded-2xl text-sm font-bold active:scale-95 transition-all shadow-sm"
+      >
+        Continuar comprando
+      </Link>
+    </div>
 
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">Tu carrito</h1>
-
-      {/* Lista de items */}
-      <div className="space-y-4">
+    <div className="flex flex-col md:flex-row gap-8 lg:gap-12 items-start">
+      
+      {/* LADO IZQUIERDO: Lista de productos */}
+      <div className="w-full md:flex-1 space-y-4">
         {items.map((item) => (
           <div
             key={`${item.producto_id}-${item.talle}`}
-            className="bg-white rounded-2xl shadow-sm p-4 flex gap-4"
+            className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 flex gap-4 items-center"
           >
-            {/* Imagen */}
             <img
               src={item.imagen}
-              alt={`${item.marca} ${item.modelo}`}
-              className="w-20 h-20 object-cover rounded-xl bg-gray-100 shrink-0"
+              alt={item.modelo}
+              className="w-20 h-20 object-cover rounded-xl bg-gray-50 shrink-0"
             />
 
-            {/* Info */}
             <div className="flex-1 min-w-0">
-              <p className="text-xs text-gray-400 uppercase">{item.marca}</p>
-              <p className="font-semibold text-gray-900 truncate">{item.modelo}</p>
-              <p className="text-xs text-gray-500 mt-0.5">Talle: {item.talle}</p>
-              <p className="text-sm font-bold text-gray-900 mt-1">
-                {formatearPrecio(item.precio_final)}
-              </p>
-
-              {/* Cantidad */}
-              <div className="flex items-center gap-3 mt-2">
+              <div className="flex justify-between items-start">
+                <div>
+                  <p className="text-[10px] text-gray-400 uppercase tracking-wider">{item.marca}</p>
+                  <p className="font-bold text-gray-900 truncate">{item.modelo}</p>
+                  <p className="text-xs text-gray-500">Talle: {item.talle}</p>
+                </div>
                 <button
-                  onClick={() => actualizarCantidad(item.producto_id, item.talle, item.cantidad - 1)}
-                  className="w-7 h-7 rounded-full border border-gray-300 text-sm font-bold flex items-center justify-center"
+                  onClick={() => eliminarItem(item.producto_id, item.talle)}
+                  className="text-gray-300 hover:text-red-500 text-xl px-1"
                 >
-                  −
-                </button>
-                <span className="text-sm font-semibold">{item.cantidad}</span>
-                <button
-                  onClick={() => actualizarCantidad(item.producto_id, item.talle, item.cantidad + 1)}
-                  className="w-7 h-7 rounded-full border border-gray-300 text-sm font-bold flex items-center justify-center"
-                >
-                  +
+                  ×
                 </button>
               </div>
-            </div>
 
-            {/* Subtotal y eliminar */}
-            <div className="flex flex-col items-end justify-between shrink-0">
-              <button
-                onClick={() => eliminarItem(item.producto_id, item.talle)}
-                className="text-gray-300 text-xl leading-none"
-              >
-                ×
-              </button>
-              <p className="text-sm font-bold text-gray-900">
-                {formatearPrecio(item.precio_final * item.cantidad)}
-              </p>
+              <div className="flex justify-between items-center mt-3">
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => actualizarCantidad(item.producto_id, item.talle, item.cantidad - 1)}
+                    className="w-8 h-8 rounded-lg bg-gray-100 text-sm font-bold flex items-center justify-center active:bg-gray-200"
+                  >
+                    −
+                  </button>
+                  <span className="text-sm font-bold w-6 text-center">{item.cantidad}</span>
+                  <button
+                    onClick={() => actualizarCantidad(item.producto_id, item.talle, item.cantidad + 1)}
+                    className="w-8 h-8 rounded-lg bg-gray-100 text-sm font-bold flex items-center justify-center active:bg-gray-200"
+                  >
+                    +
+                  </button>
+                </div>
+                <p className="text-sm font-black text-gray-900">
+                  {formatearPrecio(item.precio_final * item.cantidad)}
+                </p>
+              </div>
             </div>
           </div>
         ))}
       </div>
 
-      {/* Resumen fijo abajo */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-4 py-4 max-w-lg mx-auto">
-        <div className="flex justify-between items-center mb-3">
-          <span className="text-gray-600 font-medium">Total</span>
-          <span className="text-xl font-bold text-gray-900">
-            {formatearPrecio(totalPrecio())}
-          </span>
+      {/* LADO DERECHO: Resumen de compra */}
+      <div className="w-full md:w-80 lg:w-96 shrink-0">
+        <div className="bg-gray-50 p-6 rounded-3xl border border-gray-200 md:sticky md:top-24">
+          <div className="flex justify-between items-center mb-4">
+            <span className="text-gray-600 font-medium">Total</span>
+            <span className="text-2xl font-black text-gray-900">
+              {formatearPrecio(totalPrecio())}
+            </span>
+          </div>
+          <button
+            onClick={() => navigate('/checkout')}
+            className="w-full bg-black text-white py-4 rounded-2xl text-base font-bold active:scale-95 transition-all shadow-lg"
+          >
+            Finalizar Compra
+          </button>
         </div>
-        <button
-          onClick={() => navigate('/checkout')}
-          className="w-full bg-black text-white py-4 rounded-2xl text-base font-bold active:scale-95 transition-all"
-        >
-          Continuar con la compra
-        </button>
       </div>
-
     </div>
-  )
+  </div>
+)
 }
 
 export default Carrito

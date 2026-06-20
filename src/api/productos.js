@@ -10,6 +10,13 @@ export const getProducto = async (id) => {
   return data
 }
 
+export const getProductosDescuento = async () => {
+  const { data } = await api.get('/productos', { 
+    params: { con_descuento: 'true' } 
+  });
+  return data;
+};
+
 export const getCategorias = async () => {
   const { data } = await api.get('/categorias')
   return data
