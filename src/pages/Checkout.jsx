@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import useCarritoStore from '../store/carritoStore'
 import { formatearPrecio } from '../utils/formato'
@@ -10,6 +10,7 @@ function Checkout() {
 
   const [form, setForm] = useState({
     nombre: '',
+    apellido: '',
     email: '',
     telefono: '',
     direccion: '',
@@ -19,10 +20,11 @@ function Checkout() {
   const [cargando, setCargando] = useState(false)
   const [errorApi, setErrorApi] = useState(null)
 
-  if (items.length === 0) {
-    navigate('/carrito')
-    return null
-  }
+  useEffect(() => {
+    if (items.length === 0) {
+      navigate('/carrito')
+    }
+  }, [items, navigate])
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value })
@@ -32,6 +34,7 @@ function Checkout() {
   const validar = () => {
     const nuevosErrores = {}
     if (!form.nombre.trim()) nuevosErrores.nombre = 'El nombre es obligatorio'
+    if (!form.apellido.trim()) nuevosErrores.apellido = 'El apellido es obligatorio'
     if (!form.email.trim()) nuevosErrores.email = 'El email es obligatorio'
     else if (!/\S+@\S+\.\S+/.test(form.email)) nuevosErrores.email = 'Email inválido'
     if (!form.telefono.trim()) nuevosErrores.telefono = 'El teléfono es obligatorio'
@@ -61,12 +64,15 @@ function Checkout() {
 
       const { data } = await api.post('/pedidos', payload)
 
-      // Cuando integremos MercadoPago, acá redirigimos a data.mp_init_point
-      // Por ahora navegamos a la pantalla de éxito
       vaciarCarrito()
-      navigate('/pago/exitoso', { state: { pedido_id: data.pedido_id } })
+      // Redirigir a MercadoPago
+      window.location.href = data.mp_init_point
+      // Por ahora navegamos a la pantalla de éxito
+      //navigate('/pago/exitoso', { state: { pedido_id: data.pedido_id } })
 
     } catch (error) {
+      //setErrorApi('Hubo un error al procesar el pedido. Intentá de nuevo.')
+      console.log('Error detalle:', error.response?.data)
       setErrorApi('Hubo un error al procesar el pedido. Intentá de nuevo.')
     } finally {
       setCargando(false)
@@ -84,7 +90,7 @@ function Checkout() {
         {/* Nombre */}
         <div>
           <label className="text-sm font-medium text-gray-700 block mb-1">
-            Nombre completo
+            Nombre
           </label>
           <input
             type="text"
@@ -98,6 +104,26 @@ function Checkout() {
           />
           {errores.nombre && (
             <p className="text-xs text-red-500 mt-1">{errores.nombre}</p>
+          )}
+        </div>
+        
+        {/* Apellido */}
+        <div>
+          <label className="text-sm font-medium text-gray-700 block mb-1">
+            Apellido
+          </label>
+          <input
+            type="text"
+            name="apellido"
+            value={form.apellido}
+            onChange={handleChange}
+            placeholder="García"
+            className={`w-full border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-black ${
+              errores.apellido ? 'border-red-400' : 'border-gray-300'
+            }`}
+          />
+          {errores.apellido && (
+            <p className="text-xs text-red-500 mt-1">{errores.apellido}</p>
           )}
         </div>
 
