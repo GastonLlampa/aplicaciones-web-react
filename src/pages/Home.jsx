@@ -1,121 +1,149 @@
-import { Link } from 'react-router-dom'
-import { useQuery } from '@tanstack/react-query'
-import { getProductos } from '../api/productos'
-import ProductoCard from '../components/ProductoCard'
-import { formatearPrecio } from '../utils/formato'
+import React from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { getProductos, getProductosDescuento } from '../api/productos'; 
+import ProductoCard from '../components/ProductoCard';
+import { Link } from 'react-router-dom';
+import heroImg from '../assets/hero.png';
 
-function Home() {
-  const { data: destacados, isLoading } = useQuery({
-    queryKey: ['productos-destacados'],
-    queryFn: () => getProductos({ per_page: 4 }),
-    staleTime: 1000 * 60 * 5,
-  })
+const Home = () => {
+  const { 
+    data: dataDescuentos, 
+    isLoading: isLoadingDescuentos, 
+    isError: isErrorDescuentos 
+  } = useQuery({
+    queryKey: ['productosDescuentos'],
+    queryFn: () => getProductosDescuento()
+  });
 
-  const { data: ofertas } = useQuery({
-    queryKey: ['productos-ofertas'],
-    queryFn: () => getProductos({ precio_max: 50000, per_page: 4 }),
-    staleTime: 1000 * 60 * 5,
-  })
+  const { 
+    data: dataRecomendados, 
+    isLoading: isLoadingRecomendados, 
+    isError: isErrorRecomendados 
+  } = useQuery({
+    queryKey: ['productosRecomendados'],
+    queryFn: () => getProductos()
+  });
+
+  const productosEnPromo = dataDescuentos?.data || [];
+  const productosRecomendados = dataRecomendados?.data?.slice(0, 8) || [];
 
   return (
-    <div className="max-w-lg mx-auto pb-10">
-
-      {/* Hero */}
-      <div className="bg-black text-white px-6 py-14 text-center">
-        <p className="text-sm uppercase tracking-widest text-gray-400 mb-2">
-          Nueva colección
-        </p>
-        <h1 className="text-4xl font-black mb-4 leading-tight">
-          Las mejores<br />zapatillas
-        </h1>
-        <p className="text-gray-400 text-sm mb-8">
-          Encontrá tu estilo entre las mejores marcas del mundo
-        </p>
-        <Link
-          to="/productos"
-          className="bg-white text-black px-8 py-3 rounded-2xl font-bold text-sm inline-block active:scale-95 transition-all"
-        >
-          Ver catálogo
-        </Link>
-      </div>
-
-      {/* Categorías rápidas */}
-      <div className="px-4 py-6">
-        <h2 className="text-lg font-bold text-gray-900 mb-4">Explorá por estilo</h2>
-        <div className="grid grid-cols-3 gap-3">
-          {[
-            { label: 'Running', emoji: '🏃' },
-            { label: 'Urbanas', emoji: '🏙️' },
-            { label: 'Fútbol', emoji: '⚽' },
-          ].map((cat) => (
-            <Link
-              key={cat.label}
-              to={`/productos?categoria=${cat.label}`}
-              className="bg-gray-100 rounded-2xl py-4 flex flex-col items-center gap-1 active:scale-95 transition-all"
-            >
-              <span className="text-2xl">{cat.emoji}</span>
-              <span className="text-xs font-medium text-gray-700">{cat.label}</span>
-            </Link>
-          ))}
+    <div className="flex flex-col bg-white">
+      
+      {/* 1. SECCIÓN PROMOCIONAL (Hero / Banner Principal) */}
+      <section className="relative w-full h-[60vh] min-h-[300px] bg-black flex items-center justify-center text-center overflow-hidden">
+        <img 
+          src={heroImg} 
+          alt="Boyz in the Sneaker Promoción" 
+          className="absolute inset-0 w-full h-full object-cover opacity-60" 
+        />
+        <div className="relative z-10 px-6 max-w-2xl mx-auto">
+          <span className="inline-block bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-full tracking-widest uppercase mb-4 shadow-sm">
+            Official Store
+          </span>
+          <h1 className="text-4xl md:text-6xl font-black text-white uppercase italic drop-shadow-lg tracking-tight">
+            Boyz in the Sneaker
+          </h1>
+          <p className="mt-4 text-sm md:text-base text-gray-200 font-medium drop-shadow-md">
+            Encontrá tu estilo entre las mejores marcas del mundo
+          </p>
         </div>
-      </div>
+      </section>
 
-      {/* Productos destacados */}
-      <div className="px-4 pb-6">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-lg font-bold text-gray-900">Destacados</h2>
-          <Link to="/productos" className="text-sm text-gray-400 underline">
-            Ver todos
-          </Link>
-        </div>
-
-        {isLoading ? (
-          <div className="grid grid-cols-2 gap-3">
-            {[...Array(4)].map((_, i) => (
-              <div key={i} className="bg-gray-200 rounded-2xl aspect-square animate-pulse" />
-            ))}
-          </div>
-        ) : (
-          <div className="grid grid-cols-2 gap-3">
-            {destacados?.data?.map((producto) => (
-              <ProductoCard key={producto.id} producto={producto} />
-            ))}
-          </div>
-        )}
-      </div>
-
-      {/* Banner promocional */}
-      <div className="mx-4 bg-red-500 text-white rounded-2xl px-6 py-8 text-center mb-6">
-        <p className="text-xs uppercase tracking-widest mb-2 opacity-80">Ofertas especiales</p>
-        <p className="text-2xl font-black mb-1">Hasta 50% OFF</p>
-        <p className="text-sm opacity-80 mb-4">En zapatillas seleccionadas</p>
-        <Link
-          to="/productos"
-          className="bg-white text-red-500 px-6 py-2 rounded-xl font-bold text-sm inline-block"
-        >
-          Ver ofertas
-        </Link>
-      </div>
-
-      {/* Productos en oferta */}
-      {ofertas?.data?.length > 0 && (
-        <div className="px-4">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-lg font-bold text-gray-900">En oferta</h2>
-            <Link to="/productos" className="text-sm text-gray-400 underline">
+      {/* 2. SECCIÓN ÚLTIMOS DESCUENTOS */}
+      <section className="py-14 w-full bg-gray-50 border-b border-gray-100">
+        <div className="max-w-screen-xl mx-auto">
+          
+          <div className="px-4 md:px-8 flex items-center justify-between mb-6">
+            <h2 className="text-lg md:text-2xl font-black uppercase tracking-tight text-gray-900">
+              Últimos descuentos
+            </h2>
+            <Link to="/productos" className="text-xs md:text-sm text-gray-500 hover:text-black underline font-medium">
               Ver todos
             </Link>
           </div>
-          <div className="grid grid-cols-2 gap-3">
-            {ofertas.data.map((producto) => (
-              <ProductoCard key={producto.id} producto={producto} />
+
+          {isLoadingDescuentos && (
+            <div className="flex gap-4 overflow-x-auto px-4 md:px-8 py-4">
+              {[1, 2, 3, 4, 5].map((n) => (
+                <div key={n} className="flex-none w-[170px] md:w-[240px] h-64 bg-gray-200 animate-pulse rounded-2xl"></div>
+              ))}
+            </div>
+          )}
+
+          {!isLoadingDescuentos && !isErrorDescuentos && (
+            <div 
+              className="flex gap-4 overflow-x-auto px-4 md:px-8 pb-6 pt-2 snap-x snap-mandatory scroll-smooth custom-scrollbar"
+              style={{ WebkitOverflowScrolling: 'touch' }}
+            >
+              <style>{`.custom-scrollbar::-webkit-scrollbar { display: none; } .custom-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }`}</style>
+              
+              {productosEnPromo.map((producto) => (
+                <div key={producto.id} className="flex-none w-[170px] md:w-[240px] snap-start">
+                  <ProductoCard producto={producto} />
+                </div>
+              ))}
+              
+              {productosEnPromo.length > 0 && (
+                <div className="flex-none w-1 md:w-4 border-transparent"></div>
+              )}
+
+              {productosEnPromo.length === 0 && (
+                <p className="text-sm text-gray-400 italic py-10 w-full text-center pr-4">
+                  No hay descuentos activos en este momento.
+                </p>
+              )}
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* 3. SECCIÓN RECOMENDADOS */}
+      <section className="py-14 w-full bg-white max-w-screen-xl mx-auto">
+        <div className="px-4 md:px-8 flex items-center justify-between mb-6">
+          <h2 className="text-lg md:text-2xl font-black uppercase tracking-tight text-gray-900">
+            Recomendados para vos
+          </h2>
+        </div>
+
+        {isLoadingRecomendados && (
+          <div className="flex gap-4 overflow-x-auto px-4 md:px-8 py-4">
+            {[1, 2, 3, 4, 5].map((n) => (
+              <div key={n} className="flex-none w-[170px] md:w-[240px] h-64 bg-gray-100 animate-pulse rounded-2xl"></div>
             ))}
           </div>
+        )}
+
+        {!isLoadingRecomendados && !isErrorRecomendados && (
+          <div 
+            className="flex gap-4 overflow-x-auto px-4 md:px-8 pb-6 pt-2 snap-x snap-mandatory scroll-smooth custom-scrollbar"
+            style={{ WebkitOverflowScrolling: 'touch' }}
+          >
+            {productosRecomendados.map((producto) => (
+              <div key={producto.id} className="flex-none w-[170px] md:w-[240px] snap-start">
+                <ProductoCard producto={producto} />
+              </div>
+            ))}
+
+            {productosRecomendados.length > 0 && (
+              <div className="flex-none w-1 md:w-4 border-transparent"></div>
+            )}
+          </div>
+        )}
+
+        {/* Botón hacia el catálogo completo */}
+        <div className="mt-8 flex justify-center px-4">
+          <Link 
+            to="/productos" 
+            className="bg-black text-white text-sm md:text-base font-bold uppercase px-10 py-4 rounded-2xl active:scale-95 transition-transform hover:bg-gray-800 shadow-md"
+          >
+            Ver Catálogo Completo
+          </Link>
         </div>
-      )}
+      </section>
 
     </div>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;

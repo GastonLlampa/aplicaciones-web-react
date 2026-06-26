@@ -22,17 +22,19 @@ function DetalleProd() {
 
   if (isLoading) {
     return (
-      <div className="max-w-lg mx-auto px-4 py-6 space-y-4">
-        <div className="aspect-square bg-gray-200 rounded-2xl animate-pulse" />
-        <div className="h-6 bg-gray-200 rounded animate-pulse w-2/3" />
-        <div className="h-4 bg-gray-200 rounded animate-pulse w-1/3" />
+      <div className="max-w-screen-xl mx-auto px-4 py-12 flex flex-col md:flex-row gap-12">
+        <div className="md:w-1/2 aspect-square bg-gray-200 rounded-3xl animate-pulse" />
+        <div className="md:w-1/2 space-y-4">
+          <div className="h-8 bg-gray-200 rounded-lg animate-pulse w-2/3" />
+          <div className="h-6 bg-gray-200 rounded-lg animate-pulse w-1/3" />
+        </div>
       </div>
     )
   }
 
   if (isError) {
     return (
-      <div className="text-center py-10 text-red-500">
+      <div className="text-center py-20 text-gray-500">
         Error al cargar el producto.
       </div>
     )
@@ -53,154 +55,146 @@ function DetalleProd() {
   }
 
   return (
-    <div className="max-w-lg mx-auto pb-32">
+    <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
 
       {/* Botón volver */}
       <button
         onClick={() => navigate(-1)}
-        className="flex items-center gap-1 text-sm text-gray-500 px-4 pt-4 pb-2"
+        className="flex items-center gap-1 text-sm text-gray-500 hover:text-black mb-6 transition-colors"
       >
-        ← Volver
+        ← Volver al catálogo
       </button>
 
-      {/* Imagen principal */}
-      <div className="aspect-square bg-gray-100 overflow-hidden">
-        <img
-          src={todasLasImagenes[imagenActiva]}
-          alt={`${producto.marca} ${producto.modelo}`}
-          className="w-full h-full object-cover"
-        />
-      </div>
+      {/* Contenedor principal: Imagen a la izquierda, Info a la derecha en PC */}
+      <div className="flex flex-col md:flex-row gap-8 lg:gap-16">
+        
+        {/* Lado izquierdo: Galería de imágenes */}
+        <div className="md:w-1/2">
+          <div className="aspect-square bg-gray-50 rounded-3xl overflow-hidden border border-gray-100">
+            <img
+              src={todasLasImagenes[imagenActiva]}
+              alt={`${producto.marca} ${producto.modelo}`}
+              className="w-full h-full object-cover"
+            />
+          </div>
 
-      {/* Galería miniaturas */}
-      {todasLasImagenes.length > 1 && (
-        <div className="flex gap-2 px-4 mt-3 overflow-x-auto">
-          {todasLasImagenes.map((img, i) => (
-            <button
-              key={i}
-              onClick={() => setImagenActiva(i)}
-              className={`shrink-0 w-16 h-16 rounded-xl overflow-hidden border-2 ${
-                imagenActiva === i ? 'border-black' : 'border-transparent'
-              }`}
-            >
-              <img src={img} alt="" className="w-full h-full object-cover" />
-            </button>
-          ))}
-        </div>
-      )}
-
-      {/* Info del producto */}
-      <div className="px-4 mt-4">
-        <p className="text-sm text-gray-400 uppercase tracking-wide">{producto.marca}</p>
-        <h1 className="text-2xl font-bold text-gray-900">{producto.modelo}</h1>
-        <p className="text-sm text-gray-500 mt-1">{producto.categoria.nombre}</p>
-
-        {/* Precio */}
-        <div className="mt-3">
-          {producto.descuento > 0 ? (
-            <div className="flex items-center gap-3">
-              <p className="text-2xl font-bold text-red-500">
-                {formatearPrecio(producto.precio_final)}
-              </p>
-              <p className="text-sm text-gray-400 line-through">
-                {formatearPrecio(producto.precio)}
-              </p>
-              <span className="bg-red-100 text-red-500 text-xs font-bold px-2 py-1 rounded-full">
-                -{producto.descuento}%
-              </span>
-            </div>
-          ) : (
-            <p className="text-2xl font-bold text-gray-900">
-              {formatearPrecio(producto.precio_final)}
-            </p>
-          )}
-        </div>
-
-        {/* Descripción */}
-        <p className="text-sm text-gray-600 mt-4 leading-relaxed">
-          {producto.descripcion}
-        </p>
-
-        {/* Selector de talle */}
-        <div className="mt-6">
-          <p className="text-sm font-semibold text-gray-700 mb-2">
-            Seleccioná un talle:
-          </p>
-          <div className="flex flex-wrap gap-2">
-            {producto.talles.map((t) => {
-              const sinStock = t.stock === 0
-              const seleccionado = talleSeleccionado === t.talle
-              return (
+          {todasLasImagenes.length > 1 && (
+            <div className="flex gap-4 mt-4 overflow-x-auto pb-2">
+              {todasLasImagenes.map((img, i) => (
                 <button
-                  key={t.talle}
-                  onClick={() => {
-                    if (sinStock) return
-                    setTalleSeleccionado(t.talle)
-                    setCantidad(1)
-                  }}
-                  disabled={sinStock}
-                  className={`w-12 h-12 rounded-xl text-sm font-medium border-2 transition-all ${
-                    sinStock
-                      ? 'border-gray-200 text-gray-300 line-through cursor-not-allowed'
-                      : seleccionado
-                      ? 'border-black bg-black text-white'
-                      : 'border-gray-300 text-gray-700 active:scale-95'
+                  key={i}
+                  onClick={() => setImagenActiva(i)}
+                  className={`shrink-0 w-20 h-20 rounded-2xl overflow-hidden border-2 transition-all ${
+                    imagenActiva === i ? 'border-black' : 'border-transparent'
                   }`}
                 >
-                  {t.talle}
+                  <img src={img} alt="" className="w-full h-full object-cover" />
                 </button>
-              )
-            })}
-          </div>
-          {talleSeleccionado && (
-            <p className="text-xs text-gray-400 mt-2">
-              Stock disponible: {stockTalleSeleccionado} unidades
-            </p>
+              ))}
+            </div>
           )}
         </div>
 
-        {/* Selector de cantidad */}
-        {talleSeleccionado && (
-          <div className="mt-4">
-            <p className="text-sm font-semibold text-gray-700 mb-2">Cantidad:</p>
-            <div className="flex items-center gap-4">
-              <button
-                onClick={() => setCantidad((c) => Math.max(1, c - 1))}
-                className="w-10 h-10 rounded-full border-2 border-gray-300 text-lg font-bold flex items-center justify-center active:scale-95"
-              >
-                −
-              </button>
-              <span className="text-lg font-semibold w-6 text-center">{cantidad}</span>
-              <button
-                onClick={() =>
-                  setCantidad((c) => Math.min(stockTalleSeleccionado, c + 1))
-                }
-                className="w-10 h-10 rounded-full border-2 border-gray-300 text-lg font-bold flex items-center justify-center active:scale-95"
-              >
-                +
-              </button>
+        {/* Lado derecho: Info del producto */}
+        <div className="md:w-1/2 md:pt-4">
+          <p className="text-sm text-gray-400 uppercase tracking-widest font-bold">{producto.marca}</p>
+          <h1 className="text-3xl md:text-5xl font-black text-gray-900 mt-2 mb-2 tracking-tight">{producto.modelo}</h1>
+          <p className="text-sm text-gray-500">{producto.categoria.nombre}</p>
+
+          <div className="mt-6">
+            {producto.descuento > 0 ? (
+              <div className="flex items-center gap-4">
+                <p className="text-4xl font-black text-red-600">
+                  {formatearPrecio(producto.precio_final)}
+                </p>
+                <p className="text-lg text-gray-400 line-through">
+                  {formatearPrecio(producto.precio)}
+                </p>
+                <span className="bg-red-100 text-red-600 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                  -{producto.descuento}%
+                </span>
+              </div>
+            ) : (
+              <p className="text-4xl font-black text-gray-900">
+                {formatearPrecio(producto.precio_final)}
+              </p>
+            )}
+          </div>
+
+          <p className="text-gray-600 mt-8 leading-relaxed text-lg">
+            {producto.descripcion}
+          </p>
+
+          {/* Selector de talle */}
+          <div className="mt-10">
+            <p className="text-sm font-bold text-gray-900 mb-4 uppercase tracking-wider">Seleccioná un talle</p>
+            <div className="flex flex-wrap gap-3">
+              {producto.talles.map((t) => {
+                const sinStock = t.stock === 0
+                const seleccionado = talleSeleccionado === t.talle
+                return (
+                  <button
+                    key={t.talle}
+                    onClick={() => {
+                      if (sinStock) return
+                      setTalleSeleccionado(t.talle)
+                      setCantidad(1)
+                    }}
+                    disabled={sinStock}
+                    className={`w-14 h-14 md:w-16 md:h-16 rounded-2xl text-base font-bold border-2 transition-all ${
+                      sinStock
+                        ? 'border-gray-100 text-gray-300 line-through cursor-not-allowed'
+                        : seleccionado
+                        ? 'border-black bg-black text-white shadow-lg'
+                        : 'border-gray-200 text-gray-700 hover:border-black'
+                    }`}
+                  >
+                    {t.talle}
+                  </button>
+                )
+              })}
             </div>
           </div>
-        )}
-      </div>
 
-      {/* Botón agregar al carrito — fijo abajo */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-4 py-4 max-w-lg mx-auto">
-        <button
-          onClick={handleAgregarCarrito}
-          disabled={!talleSeleccionado}
-          className={`w-full py-4 rounded-2xl text-base font-bold transition-all ${
-            agregado
-              ? 'bg-green-500 text-white'
-              : talleSeleccionado
-              ? 'bg-black text-white active:scale-95'
-              : 'bg-gray-200 text-gray-400 cursor-not-allowed'
-          }`}
-        >
-          {agregado ? '✓ Agregado al carrito' : 'Agregar al carrito'}
-        </button>
-      </div>
+          {/* Selector de cantidad y Botón (Layout PC más grande) */}
+          <div className="mt-10 flex flex-col gap-6">
+            {talleSeleccionado && (
+              <div className="flex items-center gap-6">
+                <p className="text-sm font-bold text-gray-900 uppercase tracking-wider">Cantidad</p>
+                <div className="flex items-center gap-4 bg-gray-50 border border-gray-200 rounded-full px-2 py-1">
+                  <button
+                    onClick={() => setCantidad((c) => Math.max(1, c - 1))}
+                    className="w-10 h-10 rounded-full bg-white border border-gray-200 text-lg font-bold flex items-center justify-center hover:bg-gray-50"
+                  >
+                    −
+                  </button>
+                  <span className="text-lg font-bold w-8 text-center">{cantidad}</span>
+                  <button
+                    onClick={() => setCantidad((c) => Math.min(stockTalleSeleccionado, c + 1))}
+                    className="w-10 h-10 rounded-full bg-white border border-gray-200 text-lg font-bold flex items-center justify-center hover:bg-gray-50"
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
+            )}
 
+            <button
+              onClick={handleAgregarCarrito}
+              disabled={!talleSeleccionado}
+              className={`w-full md:max-w-sm py-5 rounded-2xl text-lg font-black uppercase tracking-wider transition-all shadow-lg ${
+                agregado
+                  ? 'bg-green-600 text-white'
+                  : talleSeleccionado
+                  ? 'bg-black text-white hover:bg-gray-800'
+                  : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+              }`}
+            >
+              {agregado ? '✓ Agregado' : 'Agregar al carrito'}
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }

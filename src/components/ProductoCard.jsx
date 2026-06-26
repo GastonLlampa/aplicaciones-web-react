@@ -4,7 +4,7 @@ import { formatearPrecio } from '../utils/formato'
 function ProductoCard({ producto }) {
   return (
     <Link to={`/productos/${producto.id}`} className="block">
-      <div className="bg-white rounded-2xl shadow-sm overflow-hidden active:scale-95 transition-transform">
+<div className="bg-white rounded-2xl shadow-sm hover:shadow-xl overflow-hidden active:scale-95 transition-all hover:-translate-y-1 duration-300">
         
         {/* Imagen */}
         <div className="relative aspect-square bg-gray-100">
