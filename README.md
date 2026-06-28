@@ -66,13 +66,34 @@ https://boyz-in-the-sneaker-laravel.vercel.app/api-public
 
 ## 🔄 Flujo de compra
 Catálogo → Detalle → [elige talle + cantidad] → Carrito
+
 → Checkout [nombre, apellido, email, teléfono, dirección]
+
 → Laravel crea preferencia MP y registra venta como "pendiente"
+
 → React redirige a MercadoPago
-→ Cliente paga
+
+→ Cliente paga -> Usar usuario de prueba
+
 → MercadoPago llama al webhook de Laravel
+
 → Laravel actualiza estado a "pagado"
+
 → MercadoPago redirige a /pago/exitoso
+
+---
+
+## 🧪 Credenciales de prueba — MercadoPago
+
+Para probar el flujo de pago sin usar dinero real, MercadoPago provee cuentas de prueba.
+
+### Cómo obtener las credenciales de prueba:
+
+1. Entrá a [mercadopago.com.ar/developers/panel](https://www.mercadopago.com.ar/developers/panel)
+2. Seleccioná tu aplicación
+3. Andá a **Cuentas de prueba**
+4. Creá una cuenta de tipo **Comprador**
+5. Usá esa cuenta para iniciar sesión en el checkout de MercadoPago
 
 ---
 
