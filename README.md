@@ -12,7 +12,7 @@
 
 ## 📝 Introducción
 
-Esta es la segunda parte del Proyecto de Cursado. Es una aplicación web orientada a los clientes de **Boyz in the Sneaker**, una tienda especializada en calzado. Permite a los usuarios explorar el catálogo de productos, configurar un carrito de compras y realizar el pago mediante MercadoPago.
+Esta es la segunda parte del Proyecto de Cursado. Es una aplicación web orientada a los clientes de **Boyz in the Sneaker**, una tienda especializada en zapatillas. Permite a los usuarios explorar el catálogo de productos, configurar un carrito de compras y realizar el pago mediante MercadoPago.
 
 La aplicación consume datos exclusivamente a través de la API REST provista por la aplicación Laravel, lo que refuerza la arquitectura de dos sistemas completamente independientes.
 
