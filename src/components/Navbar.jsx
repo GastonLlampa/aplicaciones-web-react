@@ -12,13 +12,13 @@ function Navbar() {
       <div className="max-w-lg mx-auto px-4 py-3 flex items-center justify-between">
         
         {/* Logo */}
-        <Link to="/" className="text-xl font-bold tracking-tight">
+        <Link to="/" className="text-xl font-bold tracking-tight" >
           👟 Boyz in the Sneaker
         </Link>
 
         {/* Ícono carrito */}
-        <Link to="/carrito" className="relative">
-          <span className="text-2xl">🛒</span>
+        <Link to="/carrito" className="relative" aria-label="Ver carrito de compras">
+          <span className="text-2xl" aria-hidden="true">🛒</span>
           {totalItems() > 0 && (
             <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
               {totalItems()}
