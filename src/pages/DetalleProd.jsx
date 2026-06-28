@@ -164,6 +164,7 @@ function DetalleProd() {
                 <div className="flex items-center gap-4 bg-gray-50 border border-gray-200 rounded-full px-2 py-1">
                   <button
                     onClick={() => setCantidad((c) => Math.max(1, c - 1))}
+                    aria-label="Disminuir cantidad"
                     className="w-10 h-10 rounded-full bg-white border border-gray-200 text-lg font-bold flex items-center justify-center hover:bg-gray-50"
                   >
                     −
@@ -171,6 +172,7 @@ function DetalleProd() {
                   <span className="text-lg font-bold w-8 text-center">{cantidad}</span>
                   <button
                     onClick={() => setCantidad((c) => Math.min(stockTalleSeleccionado, c + 1))}
+                    aria-label="Aumentar cantidad"
                     className="w-10 h-10 rounded-full bg-white border border-gray-200 text-lg font-bold flex items-center justify-center hover:bg-gray-50"
                   >
                     +

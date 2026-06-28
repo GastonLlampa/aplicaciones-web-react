@@ -17,8 +17,8 @@ function Navbar() {
         </Link>
 
         {/* Ícono carrito */}
-        <Link to="/carrito" className="relative hover:scale-110 transition-transform">
-          <span className="text-2xl md:text-3xl">🛒</span>
+        <Link to="/carrito" className="relative hover:scale-110 transition-transform" aria-label="Ver carrito de compras">
+          <span className="text-2xl md:text-3xl" aria-hidden="true">🛒</span>
           {totalItems > 0 && (
             <span className="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] md:text-xs font-bold rounded-full w-5 h-5 md:w-6 md:h-6 flex items-center justify-center shadow-sm">
               {totalItems}
